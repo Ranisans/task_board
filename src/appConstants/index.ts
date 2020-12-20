@@ -14,3 +14,5 @@ export enum EServerStatus {
   OK = "ok",
   ERROR = "error",
 }
+
+export const MAX_TASKS_PER_PAGE = 3;
