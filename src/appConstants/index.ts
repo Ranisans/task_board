@@ -5,6 +5,13 @@ export enum ESortFields {
   STATUS = "status",
 }
 
+export const Sorting = [
+  { label: "Id", value: ESortFields.ID },
+  { label: "User", value: ESortFields.USERNAME },
+  { label: "Email", value: ESortFields.EMAIL },
+  { label: "Status", value: ESortFields.STATUS },
+];
+
 export enum ESortDirection {
   ASC = "asc",
   DESC = "desc",

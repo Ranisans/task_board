@@ -1,13 +1,18 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ITask } from "../appTypes";
-import { ESortFields, MAX_TASKS_PER_PAGE } from "../appConstants";
+import {
+  ESortDirection,
+  ESortFields,
+  MAX_TASKS_PER_PAGE,
+} from "../appConstants";
 
 interface ITaskList {
   taskList: ITask[];
   page: number;
   totalPages: number;
   sorting: ESortFields;
+  direction: ESortDirection;
 }
 
 const FIRST_PAGE = 1;
@@ -17,6 +22,7 @@ const initialState: ITaskList = {
   page: FIRST_PAGE,
   totalPages: 0,
   sorting: ESortFields.ID,
+  direction: ESortDirection.ASC,
 };
 
 const taskListState = createSlice({
@@ -26,17 +32,11 @@ const taskListState = createSlice({
     setTaskList: (state, { payload }: PayloadAction<ITask[]>) => {
       state.taskList = payload;
     },
-    sortById: (state) => {
-      state.sorting = ESortFields.ID;
+    setSorting: (state, { payload }: PayloadAction<ESortFields>) => {
+      state.sorting = payload;
     },
-    sortByUser: (state) => {
-      state.sorting = ESortFields.USERNAME;
-    },
-    sortByEmail: (state) => {
-      state.sorting = ESortFields.EMAIL;
-    },
-    sortByStatus: (state) => {
-      state.sorting = ESortFields.STATUS;
+    setDirection: (state, { payload }: PayloadAction<boolean>) => {
+      state.direction = payload ? ESortDirection.ASC : ESortDirection.DESC;
     },
     nextPage: (state) => {
       if (Math.ceil(state.totalPages / MAX_TASKS_PER_PAGE) > state.page) {
@@ -64,10 +64,8 @@ export default taskListState.reducer;
 
 export const {
   setTaskList,
-  sortById,
-  sortByUser,
-  sortByEmail,
-  sortByStatus,
+  setSorting,
+  setDirection,
   nextPage,
   previousPage,
   firstPage,
