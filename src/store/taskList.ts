@@ -13,6 +13,7 @@ interface ITaskList {
   totalPages: number;
   sorting: ESortFields;
   direction: ESortDirection;
+  shouldUpdate: boolean;
 }
 
 const FIRST_PAGE = 1;
@@ -23,6 +24,7 @@ const initialState: ITaskList = {
   totalPages: 0,
   sorting: ESortFields.ID,
   direction: ESortDirection.ASC,
+  shouldUpdate: false,
 };
 
 const taskListState = createSlice({
@@ -57,6 +59,9 @@ const taskListState = createSlice({
     setTotalPages: (state, { payload }: PayloadAction<number>) => {
       state.totalPages = payload;
     },
+    setShouldUpdate: (state, { payload }: PayloadAction<boolean>) => {
+      state.shouldUpdate = payload;
+    },
   },
 });
 
@@ -71,4 +76,5 @@ export const {
   firstPage,
   lastPage,
   setTotalPages,
+  setShouldUpdate,
 } = taskListState.actions;

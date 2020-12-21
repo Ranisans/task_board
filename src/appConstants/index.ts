@@ -22,4 +22,9 @@ export enum EServerStatus {
   ERROR = "error",
 }
 
+export enum ETaskStatus {
+  OPEN = 0,
+  CLOSED = 10,
+}
+
 export const MAX_TASKS_PER_PAGE = 3;
