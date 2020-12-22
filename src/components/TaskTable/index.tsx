@@ -11,7 +11,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const Index: React.FC = () => {
+const TaskTable: React.FC = () => {
   const { taskList } = useSelector((state: AppState) => state.taskListReducer);
   const styles = useStyles();
 
@@ -24,4 +24,4 @@ const Index: React.FC = () => {
   );
 };
 
-export default Index;
+export default TaskTable;

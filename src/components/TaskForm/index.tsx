@@ -21,7 +21,7 @@ import { AppState } from "../../store";
 import { ETaskStatus } from "../../appConstants";
 import { addTask, editTask } from "../../apiLogic";
 import { closeTaskEditWindow } from "../../store/taskEdit";
-import { showError } from "../../store/error";
+import { showAlert } from "../../store/alert";
 import { setShouldUpdate } from "../../store/taskList";
 
 const schema = Joi.object({
@@ -81,7 +81,7 @@ const TaskForm: React.FC = () => {
       // new task
       const result = await addTask(data);
       if (!result) {
-        dispatch(showError());
+        dispatch(showAlert({ isError: true }));
         return;
       }
     } else if (authKey) {
@@ -94,15 +94,15 @@ const TaskForm: React.FC = () => {
       });
       if (!result.status) {
         const message = result.tokenExpired ? "Token expired!" : undefined;
-        dispatch(showError(message));
+        dispatch(showAlert({ message, isError: true }));
         return;
       }
     } else {
       // have no token
-      dispatch(showError("You have no rights!"));
+      dispatch(showAlert({ message: "You have no rights!", isError: true }));
       return;
     }
-    dispatch(showError("Well done!"));
+    dispatch(showAlert({ message: "Well done!", isError: false }));
     dispatch(setShouldUpdate(true));
     onClose();
   };
@@ -115,64 +115,70 @@ const TaskForm: React.FC = () => {
       className={styles.dialog}
       TransitionComponent={DialogTransition}
     >
-      <DialogTitle disableTypography className={styles.title}>
-        <Typography variant="h6" className={styles.typography}>
-          {!taskData ? "Create Task" : "Edit Task"}
-        </Typography>
-        {taskStatus ? <DoneAllIcon style={{ color: green[500] }} /> : null}
+      <div className={styles.formContainer}>
+        <DialogTitle disableTypography className={styles.title}>
+          <Typography variant="h6" className={styles.typography}>
+            {!taskData ? "Create Task" : "Edit Task"}
+          </Typography>
+          {taskStatus ? <DoneAllIcon style={{ color: green[500] }} /> : null}
 
-        <IconButton
-          aria-label="close"
-          className={styles.closeButton}
-          onClick={onClose}
-        >
-          <CloseIcon />
-        </IconButton>
-      </DialogTitle>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <DialogContent className={styles.content}>
-          <TextField
-            label="User Name"
-            variant="outlined"
-            name="username"
-            error={Boolean(errors.username)}
-            helperText={Boolean(errors.username) && "Username should be set"}
-            InputProps={{ readOnly: Boolean(taskData) }}
-            inputRef={register({ required: true })}
-          />
-          <TextField
-            label="Email"
-            variant="outlined"
-            name="email"
-            error={Boolean(errors.email)}
-            helperText={
-              Boolean(errors.email) && "Email should be set in correct format"
-            }
-            InputProps={{ readOnly: Boolean(taskData) }}
-            inputRef={register({ required: true })}
-          />
-          <TextField
-            label="Task Text"
-            variant="outlined"
-            multiline
-            rows={4}
-            name="text"
-            error={Boolean(errors.text)}
-            helperText={Boolean(errors.text) && "Should write task"}
-            inputRef={register({ required: true })}
-          />
-        </DialogContent>
-        <DialogActions className={styles.action}>
-          {!taskData ? null : (
-            <Button variant="contained" color="primary" onClick={handleStatus}>
-              Change Status
+          <IconButton
+            aria-label="close"
+            className={styles.closeButton}
+            onClick={onClose}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <DialogContent className={styles.content}>
+            <TextField
+              label="User Name"
+              variant="outlined"
+              name="username"
+              error={Boolean(errors.username)}
+              helperText={Boolean(errors.username) && "Username should be set"}
+              InputProps={{ readOnly: Boolean(taskData) }}
+              inputRef={register({ required: true })}
+            />
+            <TextField
+              label="Email"
+              variant="outlined"
+              name="email"
+              error={Boolean(errors.email)}
+              helperText={
+                Boolean(errors.email) && "Email should be set in correct format"
+              }
+              InputProps={{ readOnly: Boolean(taskData) }}
+              inputRef={register({ required: true })}
+            />
+            <TextField
+              label="Task Text"
+              variant="outlined"
+              multiline
+              rows={4}
+              name="text"
+              error={Boolean(errors.text)}
+              helperText={Boolean(errors.text) && "Should write task"}
+              inputRef={register({ required: true })}
+            />
+          </DialogContent>
+          <DialogActions className={styles.action}>
+            {!taskData ? null : (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleStatus}
+              >
+                Change Status
+              </Button>
+            )}
+            <Button variant="contained" color="primary" type="submit">
+              {!taskData ? "Create" : "Update"}
             </Button>
-          )}
-          <Button variant="contained" color="primary" type="submit">
-            {!taskData ? "Create" : "Update"}
-          </Button>
-        </DialogActions>
-      </form>
+          </DialogActions>
+        </form>
+      </div>
     </Dialog>
   );
 };

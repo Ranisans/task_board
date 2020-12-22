@@ -33,6 +33,10 @@ const useStyles = makeStyles((theme: Theme) => ({
   completeIcon: {
     padding: 0,
   },
+  formContainer: {
+    width: 400,
+    margin: "auto",
+  },
 }));
 
 export default useStyles;

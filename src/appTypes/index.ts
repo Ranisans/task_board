@@ -10,19 +10,23 @@ export interface ITask extends INewTask {
 }
 
 export interface IError {
-  errorMessage?: string;
+  errorMessage: string;
 }
 
-export interface IGetTasksPageResult extends IError {
-  data?: {
+interface IGetTasksPageResult {
+  data: {
     tasks: ITask[];
-    total_task_count?: number;
+    totalTaskCount: number;
   };
 }
 
-export interface IAuthenticationResult extends IError {
-  token?: string;
+export type TGetTasksPageResult = IError | IGetTasksPageResult;
+
+export interface IAuthenticationResult {
+  token: string;
 }
+
+export type TAuthenticationResult = IError | IAuthenticationResult;
 
 export interface IEditTask {
   id: number;

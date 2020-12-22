@@ -1,11 +1,11 @@
 import { EServerStatus, ESortDirection, ESortFields } from "../appConstants";
 import {
-  IAuthenticationResult,
   IEditTask,
   IEditTaskResult,
   IError,
-  IGetTasksPageResult,
+  TGetTasksPageResult,
   INewTask,
+  TAuthenticationResult,
 } from "../appTypes";
 
 interface IGetTasksPage {
@@ -16,17 +16,16 @@ interface IGetTasksPage {
   };
 }
 
-type TGetTasksPage = (data: IGetTasksPage) => Promise<IGetTasksPageResult>;
+type TGetTasksPage = (data: IGetTasksPage) => Promise<TGetTasksPageResult>;
 
-const URL_API = process.env.API_URL;
-const { DEVELOPER_NAME } = process.env;
+const { REACT_APP_DEVELOPER_NAME, REACT_APP_API_URL } = process.env;
 const errorMessage: IError = {
   errorMessage: "Something goes wrong",
 };
 
 export const getTasksPage: TGetTasksPage = async (data) => {
   const { page, sorting } = data;
-  let getUrl = `${URL_API}/?developer=${DEVELOPER_NAME}?page=${page}`;
+  let getUrl = `${REACT_APP_API_URL}/?developer=${REACT_APP_DEVELOPER_NAME}?page=${page}`;
   try {
     if (sorting) {
       getUrl = `${getUrl}?sort_direction=${sorting.sortDirection}`;
@@ -41,7 +40,7 @@ export const getTasksPage: TGetTasksPage = async (data) => {
         return {
           data: {
             tasks: message.tasks,
-            total_task_count: message.total_task_count,
+            totalTaskCount: message.total_task_count,
           },
         };
       }
@@ -57,13 +56,16 @@ type TAddTask = (data: INewTask) => Promise<boolean>;
 
 export const addTask: TAddTask = async (data) => {
   try {
-    const response = await fetch(`${URL_API}/?developer=${DEVELOPER_NAME}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json;charset=utf-8",
-      },
-      body: JSON.stringify(data),
-    });
+    const response = await fetch(
+      `${REACT_APP_API_URL}/?developer=${REACT_APP_DEVELOPER_NAME}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json;charset=utf-8",
+        },
+        body: JSON.stringify(data),
+      }
+    );
 
     if (response.ok) {
       const result = await response.json();
@@ -79,7 +81,7 @@ export const addTask: TAddTask = async (data) => {
 type TAuthentication = (
   username: string,
   password: string
-) => Promise<IAuthenticationResult>;
+) => Promise<TAuthenticationResult>;
 
 export const authentication: TAuthentication = async (username, password) => {
   const formData = new FormData();
@@ -88,7 +90,7 @@ export const authentication: TAuthentication = async (username, password) => {
 
   try {
     const response = await fetch(
-      `${URL_API}/login?developer=${DEVELOPER_NAME}`,
+      `${REACT_APP_API_URL}/login?developer=${REACT_APP_DEVELOPER_NAME}`,
       {
         method: "POST",
         body: formData,
@@ -116,7 +118,7 @@ export const editTask: TEditTask = async (data) => {
   const { id, text, taskStatus, token } = data;
   try {
     const response = await fetch(
-      `${URL_API}/edit/:${id}?developer=${DEVELOPER_NAME}`,
+      `${REACT_APP_API_URL}/edit/:${id}?developer=${REACT_APP_DEVELOPER_NAME}`,
       {
         method: "POST",
         headers: {
