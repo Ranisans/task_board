@@ -33,6 +33,11 @@ const useStyles = makeStyles(() => ({
   button: {
     width: 80,
   },
+  filterBlock: {
+    display: "flex",
+    justifyContent: "space-between",
+    gridGap: 50,
+  },
 }));
 
 const Header: React.FC = () => {
@@ -65,37 +70,38 @@ const Header: React.FC = () => {
   return (
     <AppBar position="static">
       <Toolbar className={styles.root}>
-        <div>
-          <InputLabel
-            htmlFor="sorting-label"
-            className={clsx(styles.label, styles.whiteColor)}
-          >
-            Sort by
-          </InputLabel>
-          <Select
-            labelId="sorting-label"
-            value={sorting}
-            onChange={handleSelectChange}
-            className={clsx(styles.select, styles.whiteColor)}
-          >
-            {Sorting.map((element) => (
-              <MenuItem value={element.value} key={element.value}>
-                {element.label}
-              </MenuItem>
-            ))}
-          </Select>
+        <div className={styles.filterBlock}>
+          <div>
+            <InputLabel
+              htmlFor="sorting-label"
+              className={clsx(styles.label, styles.whiteColor)}
+            >
+              Sort by
+            </InputLabel>
+            <Select
+              labelId="sorting-label"
+              value={sorting}
+              onChange={handleSelectChange}
+              className={clsx(styles.select, styles.whiteColor)}
+            >
+              {Sorting.map((element) => (
+                <MenuItem value={element.value} key={element.value}>
+                  {element.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </div>
+          <FormControlLabel
+            control={
+              <CheckBox
+                checked={direction === ESortDirection.ASC}
+                onChange={handleCheckboxChange}
+                name="checkbox"
+              />
+            }
+            label="Asc/Desc"
+          />
         </div>
-        <FormControlLabel
-          control={
-            <CheckBox
-              checked={direction === ESortDirection.ASC}
-              onChange={handleCheckboxChange}
-              name="checkedF"
-              indeterminate
-            />
-          }
-          label="Asc/Desc"
-        />
         <Button
           className={clsx(styles.whiteColor, styles.button)}
           onClick={onLogInOut}
