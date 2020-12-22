@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
 import { useSelector } from "react-redux";
@@ -15,11 +15,17 @@ const TaskTable: React.FC = () => {
   const { taskList } = useSelector((state: AppState) => state.taskListReducer);
   const styles = useStyles();
 
+  const memoizedValue = useMemo(
+    () =>
+      taskList.map((taskData) => (
+        <TaskCard data={taskData} key={taskData.id} />
+      )),
+    [taskList]
+  );
+
   return (
     <div aria-label="task table" className={styles.root}>
-      {taskList.map((taskData) => (
-        <TaskCard data={taskData} key={taskData.id} />
-      ))}
+      {memoizedValue}
     </div>
   );
 };

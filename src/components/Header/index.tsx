@@ -10,11 +10,14 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import CheckBox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import clsx from "clsx";
+import { withStyles } from "@material-ui/core";
+import { green } from "@material-ui/core/colors";
 
 import { ESortDirection, ESortFields, Sorting } from "../../appConstants";
 import { AppState } from "../../store";
 import { resetKey, openLoginWindow } from "../../store/login";
 import { setSorting, setDirection } from "../../store/taskList";
+import { createTask } from "../../store/taskEdit";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -40,6 +43,16 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
+const GreenButton = withStyles(() => ({
+  root: {
+    color: "#fff",
+    backgroundColor: green[500],
+    "&:hover": {
+      backgroundColor: green[700],
+    },
+  },
+}))(Button);
+
 const Header: React.FC = () => {
   const dispatch = useDispatch();
   const { authKey } = useSelector((state: AppState) => state.loginReducer);
@@ -55,6 +68,10 @@ const Header: React.FC = () => {
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setDirection(event.target.checked));
+  };
+
+  const creteTask = () => {
+    dispatch(createTask());
   };
 
   const onLogInOut = () => {
@@ -102,6 +119,7 @@ const Header: React.FC = () => {
             label="Asc/Desc"
           />
         </div>
+        <GreenButton onClick={creteTask}>Add task</GreenButton>
         <Button
           className={clsx(styles.whiteColor, styles.button)}
           onClick={onLogInOut}

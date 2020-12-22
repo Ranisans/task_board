@@ -8,10 +8,11 @@ import DoneAllIcon from "@material-ui/icons/DoneAll";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import { green, red } from "@material-ui/core/colors";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { ITask } from "../../appTypes";
 import { editTask } from "../../store/taskEdit";
+import { AppState } from "../../store";
 
 interface ITaskCard {
   data: ITask;
@@ -31,9 +32,10 @@ const TaskCard: React.FC<ITaskCard> = (props: ITaskCard) => {
   const { data } = props;
   const { id, username, email, text, status } = data;
   const styles = useStyles();
+  const { authKey } = useSelector((state: AppState) => state.loginReducer);
 
   const onClick = () => {
-    dispatch(editTask({ id, text, email, status, username }));
+    if (authKey) dispatch(editTask({ id, text, email, status, username }));
   };
 
   return (

@@ -18,16 +18,18 @@ const TaskPagination: React.FC = () => {
     dispatch(setPage(newPage));
   };
 
-  return (
-    <Pagination
-      count={totalPages}
-      page={page}
-      size="small"
-      onChange={handleChangePage}
-      showFirstButton
-      showLastButton
-    />
-  );
+  if (totalPages > 1)
+    return (
+      <Pagination
+        count={totalPages}
+        page={page}
+        size="small"
+        onChange={handleChangePage}
+        showFirstButton
+        showLastButton
+      />
+    );
+  return null;
 };
 
 export default TaskPagination;
