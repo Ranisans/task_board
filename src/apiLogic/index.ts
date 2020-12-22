@@ -10,7 +10,7 @@ import {
 
 interface IGetTasksPage {
   page: number;
-  sorting?: {
+  sorting: {
     sortField: ESortFields;
     sortDirection: ESortDirection;
   };
@@ -25,13 +25,11 @@ const errorMessage: IError = {
 
 export const getTasksPage: TGetTasksPage = async (data) => {
   const { page, sorting } = data;
-  let getUrl = `${REACT_APP_API_URL}/?developer=${REACT_APP_DEVELOPER_NAME}?page=${page}`;
-  try {
-    if (sorting) {
-      getUrl = `${getUrl}?sort_direction=${sorting.sortDirection}`;
-    }
+  let getUrl = `${REACT_APP_API_URL}/?developer=${REACT_APP_DEVELOPER_NAME}&page=${page}`;
+  getUrl = `${getUrl}&sort_field=${sorting.sortField}&sort_direction=${sorting.sortDirection}`;
 
-    const response = await fetch(getUrl);
+  try {
+    const response = await fetch(getUrl, { cache: "reload" });
 
     if (response.ok) {
       const result = await response.json();
@@ -55,15 +53,18 @@ export const getTasksPage: TGetTasksPage = async (data) => {
 type TAddTask = (data: INewTask) => Promise<boolean>;
 
 export const addTask: TAddTask = async (data) => {
+  const { username, email, text } = data;
+  const formData = new FormData();
+  formData.append("username", username);
+  formData.append("email", email);
+  formData.append("text", text);
+
   try {
     const response = await fetch(
-      `${REACT_APP_API_URL}/?developer=${REACT_APP_DEVELOPER_NAME}`,
+      `${REACT_APP_API_URL}/create/?developer=${REACT_APP_DEVELOPER_NAME}`,
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json;charset=utf-8",
-        },
-        body: JSON.stringify(data),
+        body: formData,
       }
     );
 
@@ -116,19 +117,17 @@ type TEditTask = (data: IEditTask) => Promise<IEditTaskResult>;
 
 export const editTask: TEditTask = async (data) => {
   const { id, text, taskStatus, token } = data;
+  const formData = new FormData();
+  formData.append("token", token);
+  formData.append("text", text);
+  formData.append("status", `${taskStatus}`);
+
   try {
     const response = await fetch(
-      `${REACT_APP_API_URL}/edit/:${id}?developer=${REACT_APP_DEVELOPER_NAME}`,
+      `${REACT_APP_API_URL}/edit/${id}?developer=${REACT_APP_DEVELOPER_NAME}`,
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json;charset=utf-8",
-        },
-        body: JSON.stringify({
-          text,
-          status: taskStatus,
-          token,
-        }),
+        body: formData,
       }
     );
     if (response.ok) {
@@ -140,7 +139,7 @@ export const editTask: TEditTask = async (data) => {
         };
       }
       if (message.token) {
-        return { status: false, tokenExpired: true };
+        return { status: false, message: message.token };
       }
     }
     return {

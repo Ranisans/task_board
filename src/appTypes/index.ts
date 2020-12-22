@@ -37,5 +37,5 @@ export interface IEditTask {
 
 export interface IEditTaskResult {
   status: boolean;
-  tokenExpired?: boolean;
+  message?: string;
 }

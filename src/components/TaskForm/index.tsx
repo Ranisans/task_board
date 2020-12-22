@@ -93,8 +93,7 @@ const TaskForm: React.FC = () => {
         taskStatus,
       });
       if (!result.status) {
-        const message = result.tokenExpired ? "Token expired!" : undefined;
-        dispatch(showAlert({ message, isError: true }));
+        dispatch(showAlert({ message: result.message, isError: true }));
         return;
       }
     } else {
