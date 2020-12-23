@@ -7,6 +7,7 @@ import TaskPagination from "./components/TaskPagination";
 import { AppState } from "./store";
 import { showAlert } from "./store/alert";
 import { setShouldUpdate, setTaskList, setTotalPages } from "./store/taskList";
+import { restoreAuthentication } from "./store/login";
 import { getTasksPage } from "./apiLogic";
 import { MAX_TASKS_PER_PAGE } from "./appConstants";
 import LoginForm from "./components/LoginForm";
@@ -27,6 +28,11 @@ const App: React.FC = () => {
   const { windowOpen: errorWindowOpen } = useSelector(
     (state: AppState) => state.alertReducer
   );
+
+  useEffect(() => {
+    dispatch(restoreAuthentication());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const updateTaskList = async () => {

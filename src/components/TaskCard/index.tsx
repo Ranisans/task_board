@@ -32,10 +32,13 @@ const TaskCard: React.FC<ITaskCard> = (props: ITaskCard) => {
   const { data } = props;
   const { id, username, email, text, status } = data;
   const styles = useStyles();
-  const { authKey } = useSelector((state: AppState) => state.loginReducer);
+  const { isAuthenticated } = useSelector(
+    (state: AppState) => state.loginReducer
+  );
 
   const onClick = () => {
-    if (authKey) dispatch(editTask({ id, text, email, status, username }));
+    if (isAuthenticated)
+      dispatch(editTask({ id, text, email, status, username }));
   };
 
   return (

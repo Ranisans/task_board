@@ -18,11 +18,12 @@ import { green } from "@material-ui/core/colors";
 import DialogTransition from "../DialogTransition";
 import useStyles from "../DialogTransition/styles";
 import { AppState } from "../../store";
-import { ETaskStatus } from "../../appConstants";
+import { AUTH_KEY, ETaskStatus } from "../../appConstants";
 import { addTask, editTask } from "../../apiLogic";
 import { closeTaskEditWindow } from "../../store/taskEdit";
 import { showAlert } from "../../store/alert";
 import { setShouldUpdate } from "../../store/taskList";
+import { openLoginWindow, resetKey } from "../../store/login";
 
 const schema = Joi.object({
   email: Joi.string()
@@ -37,7 +38,6 @@ const TaskForm: React.FC = () => {
   const { windowOpen, taskData } = useSelector(
     (state: AppState) => state.taskEditReducer
   );
-  const { authKey } = useSelector((state: AppState) => state.loginReducer);
 
   const styles = useStyles();
 
@@ -77,6 +77,7 @@ const TaskForm: React.FC = () => {
   };
 
   const onSubmit = async (data: typeof defaultValues) => {
+    const authKey = localStorage.getItem(AUTH_KEY);
     if (!taskData) {
       // new task
       const result = await addTask(data);
@@ -99,6 +100,9 @@ const TaskForm: React.FC = () => {
     } else {
       // have no token
       dispatch(showAlert({ message: "You have no rights!", isError: true }));
+      onClose();
+      dispatch(resetKey());
+      dispatch(openLoginWindow());
       return;
     }
     dispatch(showAlert({ message: "Well done!", isError: false }));

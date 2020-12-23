@@ -28,3 +28,5 @@ export enum ETaskStatus {
 }
 
 export const MAX_TASKS_PER_PAGE = 3;
+
+export const AUTH_KEY = "token";
