@@ -2,6 +2,7 @@
   "name": "react-typescript-template",
   "version": "0.1.0",
   "private": true,
+  "homepage": "http://ranisans.github.io/task_board",
   "dependencies": {
     "@hookform/resolvers": "^1.2.0",
     "@material-ui/core": "^4.11.2",
@@ -31,7 +32,9 @@
     "lint": "tsc --noEmit && eslint src/**/*.ts{,x} --fix",
     "test": "react-scripts test",
     "storybook": "start-storybook -p 9009 -s public --ci",
-    "build-storybook": "build-storybook -s public"
+    "build-storybook": "build-storybook -s public",
+    "predeploy": "yarn build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -66,6 +69,7 @@
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "7.20.0",
     "eslint-plugin-react-hooks": "4.0.0",
+    "gh-pages": "^3.1.0",
     "node-sass": "^4.14.1",
     "prettier": "^2.0.5"
   }
