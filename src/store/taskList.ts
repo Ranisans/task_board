@@ -45,11 +45,22 @@ const taskListState = createSlice({
         state.page = payload;
       }
     },
+    updatePage: (state, { payload }: PayloadAction<ITask>) => {
+      const changedRecordIndex = state.taskList.findIndex(
+        (task) => task.id === payload.id
+      );
+      if (changedRecordIndex >= 0) {
+        const newArray = state.taskList.map((task) => task);
+        const changedTask = state.taskList[changedRecordIndex];
+        if (changedTask.text !== payload.text) {
+          payload.isTextChanged = true;
+        }
+        newArray[changedRecordIndex] = payload;
+        state.taskList = newArray;
+      }
+    },
     setTotalPages: (state, { payload }: PayloadAction<number>) => {
       state.totalPages = payload;
-    },
-    setShouldUpdate: (state, { payload }: PayloadAction<boolean>) => {
-      state.shouldUpdate = payload;
     },
   },
 });
@@ -61,6 +72,6 @@ export const {
   setSorting,
   setDirection,
   setPage,
+  updatePage,
   setTotalPages,
-  setShouldUpdate,
 } = taskListState.actions;

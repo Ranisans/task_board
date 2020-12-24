@@ -22,7 +22,7 @@ import { AUTH_KEY, ETaskStatus } from "../../appConstants";
 import { addTask, editTask } from "../../apiLogic";
 import { closeTaskEditWindow } from "../../store/taskEdit";
 import { showAlert } from "../../store/alert";
-import { setShouldUpdate } from "../../store/taskList";
+import { updatePage } from "../../store/taskList";
 import { openLoginWindow, resetKey } from "../../store/login";
 
 const schema = Joi.object({
@@ -83,31 +83,34 @@ const TaskForm: React.FC = () => {
       const result = await addTask(data);
       if (!result) {
         dispatch(showAlert({ isError: true }));
-        return;
-      }
-    } else if (authKey) {
-      // edit existed if have token
-      const result = await editTask({
-        id: taskData.id,
-        text: data.text,
-        token: authKey,
-        taskStatus,
-      });
-      if (!result.status) {
-        dispatch(showAlert({ message: result.message, isError: true }));
-        return;
       }
     } else {
-      // have no token
-      dispatch(showAlert({ message: "You have no rights!", isError: true }));
+      if (authKey) {
+        // edit existed if have token
+        const result = await editTask({
+          id: taskData.id,
+          text: data.text,
+          token: authKey,
+          taskStatus,
+        });
+        if (!result.status) {
+          dispatch(showAlert({ message: result.message, isError: true }));
+          return;
+        }
+      } else {
+        // have no token
+        dispatch(showAlert({ message: "You have no rights!", isError: true }));
+        onClose();
+        dispatch(resetKey());
+        dispatch(openLoginWindow());
+        return;
+      }
+      dispatch(showAlert({ message: "Well done!", isError: false }));
+      dispatch(
+        updatePage({ ...taskData, text: data.text, status: taskStatus })
+      );
       onClose();
-      dispatch(resetKey());
-      dispatch(openLoginWindow());
-      return;
     }
-    dispatch(showAlert({ message: "Well done!", isError: false }));
-    dispatch(setShouldUpdate(true));
-    onClose();
   };
 
   return (

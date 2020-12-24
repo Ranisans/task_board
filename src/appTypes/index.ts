@@ -7,6 +7,7 @@ export interface INewTask {
 export interface ITask extends INewTask {
   id: number;
   status: number;
+  isTextChanged?: boolean;
 }
 
 export interface IError {
